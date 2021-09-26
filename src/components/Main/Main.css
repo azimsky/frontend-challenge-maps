@@ -1,7 +1,11 @@
-main {
+.main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.filters {
+  margin: 20px auto;
 }
 
 .card {
