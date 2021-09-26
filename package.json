@@ -13,8 +13,12 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3"
   },
+  "devDependencies": {
+    "concurrently": "^6.2.1"
+  },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently 'yarn server' 'yarn client'",
+    "client": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

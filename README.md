@@ -17,10 +17,9 @@ Install dependencies
 $ yarn install
 ```
 
-Start the server and client
+Start the server and client by running:
 
 ```shell
-$ yarn server
 $ yarn start
 ```
 
