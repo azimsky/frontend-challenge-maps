@@ -31,6 +31,7 @@ class Main extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (this.state.category !== prevState.category) {
 			this.updateData();
+			this.updateMarkers();
 		}
 	}
 
@@ -44,6 +45,40 @@ class Main extends React.Component {
 				loading: false
 			}))
 			.catch(err => console.log(err));
+	}
+
+	updateMarkers() {
+		// TODO: use clusters instead of individual markers to optimize performance
+		const { category, businesses } = this.state;
+
+		this.clearMarkers();
+
+		if (category && businesses.length && this.mapInstance) {
+			const bounds = new window.google.maps.LatLngBounds();
+
+			this.markers = businesses.map((business, index) => {
+				const point = new window.google.maps.LatLng({
+					lat: business.coordinates.latitude,
+					lng: business.coordinates.longitude
+				});
+				bounds.extend(point);
+
+				return new window.google.maps.Marker({
+					position: point,
+					label: index.toString(),
+					map: this.mapInstance,
+					optimized: true
+				})});
+				// zoom-in the map to fit all markers
+				this.mapInstance.fitBounds(bounds);
+		}
+	}
+
+	clearMarkers() {
+		if (this.markers && this.mapInstance) {
+			this.markers.forEach(marker => marker.setMap(null));
+			this.markers = null;
+		}
 	}
 
 	fetchRestaurants = async (category) => {
@@ -87,7 +122,7 @@ class Main extends React.Component {
 	}
 
 	render() {
-		const { category, loading } = this.state;
+		const { category, loading, businesses } = this.state;
 
 		return (
 			<main>
@@ -101,6 +136,7 @@ class Main extends React.Component {
 								key={filter.id}
 								variant={filter.id === category ? 'contained' : 'outlined'}
 								onClick={() => {
+									// one filter at a time - change here to support multiple
 									this.handleFilterCategory(filter.id === category ? '' : filter.id)
 								}}
 							>
@@ -115,7 +151,7 @@ class Main extends React.Component {
 							<CircularProgress color="inherit" />
 						</Backdrop>
 					)}
-					{this.state.businesses.map(business => {
+					{businesses.map(business => {
 						return (
 							<div className="card" key={business.id}>
 								<img src={business.image_url} alt={business.name} />
