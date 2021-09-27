@@ -6,6 +6,7 @@ import './Main.css';
 const COORDS = {
 	'Europe/Berlin': {lat: 52.518611, lng: 13.408333}
 }
+// ideally take from a config
 const FILTERS = [
 	{ id: 'pizza', label: 'Pizza' },
 	{ id: 'burgers', label: 'Burger' },
@@ -73,7 +74,7 @@ class Main extends React.Component {
 				this.mapInstance.fitBounds(bounds);
 		}
 	}
-
+	// clear markers before rendering the new ones
 	clearMarkers() {
 		if (this.markers && this.mapInstance) {
 			this.markers.forEach(marker => marker.setMap(null));
@@ -81,6 +82,7 @@ class Main extends React.Component {
 		}
 	}
 
+	// move to a distinc module for all API calls
 	fetchRestaurants = async (category) => {
 		const query = {
 			limit: 50,
@@ -113,7 +115,7 @@ class Main extends React.Component {
 			this.mapInstance = new window.google.maps.Map(mapEl, {
 				center: COORDS['Europe/Berlin'],
 				zoom: 8
-			  });
+			});
 		}
 	}
 
@@ -126,7 +128,9 @@ class Main extends React.Component {
 
 		return (
 			<main>
+				{/* TODO: make Map component */}
 				<div id="places-map" className="places-map"></div>
+				{/* TODO: make Filters component */}
 				<div className="filters">
 					<ButtonGroup variant="outlined" aria-label="outlined button group">
 						{/* TODO: add search field */}
@@ -139,6 +143,7 @@ class Main extends React.Component {
 									// one filter at a time - change here to support multiple
 									this.handleFilterCategory(filter.id === category ? '' : filter.id)
 								}}
+								data-qa="filter__category"
 							>
 								{filter.label}
 							</Button>
@@ -151,6 +156,7 @@ class Main extends React.Component {
 							<CircularProgress color="inherit" />
 						</Backdrop>
 					)}
+					{/* TODO: make Card component */}
 					{businesses.map(business => {
 						return (
 							<div className="card" key={business.id}>
